@@ -1,0 +1,49 @@
+name: Deploy a GitHub Pages
+
+# Se dispara en cada push a main, y tambien manualmente desde la pestaña Actions.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Permisos que el token del workflow necesita para publicar en Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Si haces varios push seguidos, cancela el deploy viejo y corre solo el ultimo.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # Job 1: preparar el contenido y subirlo como "artifact".
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      # Sitio estatico: la carpeta a publicar es la raiz del repo.
+      # Si tuvieras build (Vite, etc.), aqui iria npm ci && npm run build
+      # y el path seria './dist'.
+      - name: Subir artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+  # Job 2: tomar el artifact y publicarlo.
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar en Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
