@@ -20,7 +20,7 @@ Sin ese paso el workflow falla con un error de permisos.
 
 ## URL final
 
-`https://<usuario>.github.io/gh-pages-practica/`
+`https://Ary-San.github.io/practica_hackaton0/`
 
 ## Si migras a un proyecto con build (Vite, React)
 
@@ -37,5 +37,5 @@ En el job `build`, antes de `upload-pages-artifact`:
 
 y cambia `path: '.'` por `path: './dist'`.
 
-Además, en `vite.config.js` pon `base: '/gh-pages-practica/'` — si no, los
+Además, en `vite.config.js` pon `base: '/practica_hackaton0/'` — si no, los
 assets se piden desde la raíz del dominio y la página sale en blanco.
